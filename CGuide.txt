@@ -1,0 +1,32 @@
+Pointers vs Arrays:
+-char buffer[N] is different than char * buffer
+-arrays represent the actual data, where as pointers represent a pointer that points to the array
+-when passing buffers as arguments to methods, they are treated as pointers, so arrays and pointers can be indexed and referenced the same
+-the main difference is that buffers are stored where they are created, which has an effect on global variables and the size of stack frames
+-char ** environ (pointer to char pointer) is correct not char * environ[] (array of pointers)
+
+Undefined number of arguments in a method:
+-reference SEED book format string vuln section
+-this is how printf is implemented
+-use va_list.h
+-va_list ap;
+-va_start(ap, first_arg); #create argument list
+-va_arg(ap, var_type) #increment argument list
+-va_end(ap) #close (not strictly necessary)
+
+Socket Programming:
+-refer to pwn.college and https://www.binarytides.com/socket-programming-c-linux-tutorial/
+-socket(AF_INET, SOCK_STREAM, 0); #returns fd. IP_v4, TCP, and IP protocol
+
+Server-Side:
+-bind(int sockfd, struct sockaddr *addr, socklen_t addrlen); #returns error code. sockaddr: AF_INET, port, IP address (struct), {0}
+-listen(int sockfd, int backlog); #begins listening on socket
+-accept(int sockfd, struct sockaddr *addr, socklen_t *addrlen); #extracts first connection from listening socket or waits until a connection is received. Works for connection based transport protocols. returns a new fd representing a new connected socket
+-recv(int sockfd, const void *buf, size_t len , int flags) #returns -1 on error or the number of bytes received. Can use read instead
+
+Client-Side:
+-connect(int sockfd, struct sockaddr * server, socklen_t addrlen) #returns error number
+-send(int sockfd, const void *buf, size_t len, int flags) #returns -1 on error or the number of bytes sent. Can use write instead
+
+FIFO and Piping:
+-FIFO and Piping

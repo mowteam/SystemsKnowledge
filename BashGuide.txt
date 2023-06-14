@@ -1,0 +1,6 @@
+represent variables as [var]
+
+Tricks/Commans:
+$(command) to substitute command output
+'command' to substitute command output
+[fd]<> [file] to create file descriptor

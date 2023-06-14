@@ -1,0 +1,43 @@
+Defenses:
+-Non-executable Stack (NX)
+-Address Space Layout Randomization (ASLR)
+-Position Independent Executables (PIE)
+-Stack Guard
+
+Note: PIE executables are only randomized if ASLR is on
+
+Addressing Capabilites and Limitations:
+-code part of the binary (PIE with ASLR limits the knowledge of these addresses, however, due to paging they can be brute forced easily)
+-libc/dynamic libaries (change based on the program and are affected by ASLR. If the function is used, it can be found statically, otherwise it is found dynamically)
+-code inserted on stack (change due to ASLR and prevented using non executable stack)
+
+
+!NX and !ASLR (no defenses):
+-insert shellcode on stack and set return address to it
+
+!NX and ASLR:
+Attack1 from CSE523 Lecture:
+-place shellcode at the beginning of the source buffer
+-ret slide to argv (where the source buffer address is)
+-pop ret the source buffer to run the shellcode
+
+NX and !ASLR:
+Attack1 (32bit) from SEED book:
+-dynamically find the system() dynamic library function address (it differs between programs and if the SUID bit is set or not)
+-find the exit() dynamic library function address (same process as system())
+-dynamically find the address of the SHELL environment variable (sensitive to the program name length (absolute path) and ASLR), but you can use a different program to find this, as long as the program name length is the same
+-place the system address as the return address
+-place the exit address above the return address (so the shell exits without seg fault)
+-place the SHELL environment variable above the exit address
+
+Attack2 (32bit) from SEED book:
+-make multiple function calls using return oriented programming
+-place the return addresses after each other and the functions will be called
+-to call functions with arguments, set the return address to skip the prologue of the function and place the rbp value for the next function below the return address (similar to a normal frame) (this means the rbp is popped but not pushed, allowing it to be set)
+-to use libc functions called from PLT, add another function epilogue in between function calls
+-for more complicated ROP see the book
+
+NX and ASLR:
+Attack1 from CSE532 Lectures:
+-same approach as Attack1 but use ROP to build the "/bin/sh" string onto the stack
+-use strcpy address in the ROP to build the string

@@ -1,0 +1,37 @@
+Paging Overview:
+-allows Virtual memory space for each process
+-DRAM acts as a cache for Disk
+-virtual addresses are translated to physical addresses using the MMU, a hardware device
+-MMU has a cache called the TLB for PTEs and the TLB has a mechanism in place to differentiate processes
+-permission bits can be set on each page and they are checked by the MMU
+
+Multi-level page table:
+-the first level is called the global page table and is always stored in memory (not on disk)
+-PTEs point to other page tables
+-the lowest level is a normal page table
+
+Page Faults:
+-occurs when a virtual address is not mapped to a physical address (either on disk or unallocated)
+-passes control to the OS
+
+Uncached Page Fault:
+-if the virtual address is on disk, the page fault handler kicks a page out of main memory and moves the new virtual address. It also updates the page table entry
+-after the page fault handler, the instruction that caused the page fault is rerun
+
+Unallocated Page Fault:
+-returns segmentation fault
+
+Seg Fault:
+-occurs when a unallocated page is accessed
+-occurs when an access violates the permissions of a page
+
+How to Allocate Virtual Memory Pages:
+-call mmap to do this in the user process
+-normally this is done by the kernel/loader or the compiler
+-allocating more memory on the stack occurs without any mmap/mremap syscall, instead it happens automatically by the kernel during a page fault. The kernel detects that the page fault occurred adjacent to an expandable region, such as the stack, and allocates the page
+
+Memory Mapping:
+-VM areas intialized by associating them with disk objects (true for all VM)
+-either associated with a regular file (normally an executable) or an anonymous file (fills the pages with zeros)
+-once pages are dirtied (written to) they are copied between main memory and a special swap file on disk 
+-user processes can use mmap() syscall to allocate disk backed memory

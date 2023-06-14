@@ -1,0 +1,61 @@
+Information:
+see https://www.ics.uci.edu/~goodrich/teach/cs201P/notes/02_Environment_Variables.pdf for useful images on stack configuration
+see https://www.youtube.com/watch?v=Ss2e6JauS0Y for a video on loading
+see https://intezer.com/blog/research/executable-linkable-format-101-part1-sections-segments/ for a 4-part blog on loading
+
+Tools:
+-readelf is a useful command to inspect an ELF and how it will be loaded
+-objcopy is useful for editing ELFs and extracting sections
+-patchelf is useful for editing ELFs
+
+Environment variables:
+-environ is a global variable that will always point to the environment variables even when moved
+-envp is a local variable in main that points to the initial location of the environment variables
+
+Main arguments/stack layout:
+-argc, argv, and envp are passed to main (either through registers or on the stack (64 vs 32bit))
+-argv points to an array of char pointers that are above the arguments to main
+-envp points to an array of char pointers that are above the argv array
+-the actual string values for argv are stored above the envp array
+-thr actual string vlaues for envp are stroed above the strings for argv
+-the program name is stored a second time above the envp string array
+
+
+ELF Format:
+-ELF Header (contains information about the type of ELF)
+-Program Header (contains information about the segments)
+-Information/Sections
+-Section Header (contains information about sections, which are subsets of segments (i.e. .text, .data, ...))
+
+Note: ELF files can represent many types of files, including object files and core dumps, but I will focus on the executable form of an ELF
+
+Segments and Sections:
+-Sections are used for linking object files
+-Segments are used for loading executables (therefore sections are not needed in executable ELFs)
+-The LOAD segments are the only segments loaded into VM, which means all other segments that are loaded lie within the LOAD segments
+
+Symbol and String Tables:
+-two symbol tables: .symtab and .dynsym (dynamic)
+-each symbol table has a corresponding string table with the name of each symbol
+-stripping a binary removes the .symtab and .strtab sections along with other sections
+-the .dynsym and its .dymstr are used during load time for dynamic linking, so stripping a binary does not remove these (use nm -D to see them)
+-strip does not provide the capability to remove the section header, but the section header can be removed safely
+
+Linking (generic):
+-connecting symbol references and definitions is called Relocation
+-uses the relocation section and table to perform this process (.rela for x86-64 and .rel for x86)
+
+Dynamic Linking:
+-the .dynamic section holds information for dynamic linking, including required dependencies, such as libc.so.6
+-LD_PRELOAD and LD_LIBRARY_PATH can be used to load certain dependencies first and replace library calls
+-on Linux the dynamic library VM addresses can change from process to process
+-the GOT and PLT enable lazy linking (linking occurs when a function is first used)
+-the .plt contains three instructions that point to .got.plt which is a subset of .got containing the dynamically determined address of the function
+-the .plt will update this entry when a function is first called and then jump to the address stored in this entry for all other calls of the function
+-the DYNAMIC segment is used to determine the location of the relocation taables and other information needed for dynamic linking, meaning the section header is not needed
+
+
+Stripping:
+-stripping removes symbol tables
+-stripping does not removed the section header
+
