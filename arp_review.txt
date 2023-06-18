@@ -1,0 +1,67 @@
+ARP protocol
+
+Notation:
+-Target IP/MAC is the IP/MAC we are setting in the ARP table
+-Sender IP/MAC is the IP/MAC of the machine that is sending the packet (or sent the packet in the case of a response)
+
+Notes: 
+-In gratuitous ARP, the Destination MAC is ignored. What differentiates gratuitous ARP is the Ethernet destination being broadcast since it is a response
+-gratuitous ARP
+-ARP Announcement differs from request ARP because the destination and source IP are the same in ARP Announcements
+-To poison an ARP cache, send a unicast ARP Request to the machine you want to poison and change the source IP and MAC. The machine will set these in the ARP cache.
+
+Type: Typical ARP Request
+Ethernet Dest MAC: Broadcast
+Operation: Request
+Source MAC: Sender MAC
+Source IP: Sender IP
+Destination MAC: Unknown/all zeros
+Destination IP: Target IP
+
+Type: Typical ARP Response
+Ethernet Dest MAC: Sender MAC
+Operation: Response
+Source MAC: Target MAC
+Source IP: Target IP
+Destination MAC: Sender MAC
+Destination IP: Sender IP
+
+
+
+
+Type: Gratuitous ARP, ARP Response with no Request
+Use: Announce or update its IP to MAC mappings (in this case, the target IP is the one sending the packet)
+Ethernet Dest MAC: Broadcast
+Operation: Response
+Source MAC: Target/Sender MAC
+Source IP: Target/Sender IP
+Destination MAC: Broadcast (ignored)
+Destination IP: Target/Sender IP
+
+
+
+
+Type: ARP Probe
+Use: Check that an IP address is not already in use
+Ethernet Dest MAC: Broadcast
+Operation: Request
+Source MAC: Sender MAC
+Source IP: 0.0.0.0
+Destination MAC: all zeros
+Destination IP: Target/Probed IP
+
+
+
+
+Type: ARP Announcement
+Use: Claim an IP address (The sender IP and MAC are the same as the target ones that get set in ARP tables)
+Ethernet Dest MAC: Broadcast
+Operation: Request
+Source MAC: Target/Sender MAC
+Source IP: Target/Sender/Claimed IP
+Destination MAC: all zeros (ignored)
+Destination IP: Target/Sender/Claimed IP
+
+Ether(dst="7a:a6:f5:03:1a:71")/ARP(op=1, pdst="10.0.0.4", psrc="10.0.0.3")
+
+Ether(dst="de:07:83:7b:a1:38")/ARP(op=1, pdst="10.0.0.3", psrc="10.0.0.4")

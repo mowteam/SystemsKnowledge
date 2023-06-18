@@ -5,6 +5,7 @@ Pointers vs Arrays:
 -the main difference is that buffers are stored where they are created, which has an effect on global variables and the size of stack frames
 -char ** environ (pointer to char pointer) is correct not char * environ[] (array of pointers)
 
+
 Undefined number of arguments in a method:
 -reference SEED book format string vuln section
 -this is how printf is implemented
@@ -13,6 +14,7 @@ Undefined number of arguments in a method:
 -va_start(ap, first_arg); #create argument list
 -va_arg(ap, var_type) #increment argument list
 -va_end(ap) #close (not strictly necessary)
+
 
 Socket Programming:
 -refer to pwn.college and https://www.binarytides.com/socket-programming-c-linux-tutorial/
@@ -28,5 +30,28 @@ Client-Side:
 -connect(int sockfd, struct sockaddr * server, socklen_t addrlen) #returns error number
 -send(int sockfd, const void *buf, size_t len, int flags) #returns -1 on error or the number of bytes sent. Can use write instead
 
-FIFO and Piping:
--FIFO and Piping
+
+Piping:
+-reference https://w3.cs.jmu.edu/kirkpams/OpenCSF/Books/csf/html/Pipes.html (many other references online) and pipe man page
+-a traditional pipe is unnamed pipe and only lasts as long as the process/until the file descriptors are closed. Useful for communication between child processes
+-use pipe() to create a pipe attached to two fd
+-fork() and use dup2() to transfer the pipe's read end to stdin
+-delete the unused file descriptors, you can safely delete the pipe read end once dup2() is called
+-a pipe whose read or write end has been closed is considered widowed
+-a process writing to a widowed pipe will received SIGPIPE signal
+-reading from a widowed pipe will receive an EOF and any buffered data that still exists on the pipe
+-Note on read syscall: read pauses until N bytes are read or EOF is read/received. In the context of pipes and FIFOs, read will block indefinitely until something is written (assuming the pipe is not widowed)
+-Note:stdin and stdout are permission sensitive, file descriptor cannot be both read and write
+
+FIFO:
+-reference https://www.geeksforgeeks.org/named-pipe-fifo-example-c-program/
+-a named pipe that can last beyond the life of a process. Useful for ad hoc communication
+-FIFOs are a special type of file that discard data once it has been read
+-create using mkfifo() syscall
+-writing process will block until a reader becomes availables (another process opens the FIFO with read permissions)
+-A pipe or FIFO has to be open at both ends simultaneously
+-beware weird I/O blocking errors can occur
+
+I/O Blocking:
+-pipes and FIFO have the same IO blocking semantics
+

@@ -3,4 +3,5 @@ represent variables as [var]
 Tricks/Commans:
 $(command) to substitute command output
 'command' to substitute command output
-[fd]<> [file] to create file descriptor
+exec [fd]<> [file] to create file descriptor
+(command) runs the command in a subhsell, similar to forking the shell

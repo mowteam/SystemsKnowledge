@@ -20,6 +20,9 @@ Main arguments/stack layout:
 -thr actual string vlaues for envp are stroed above the strings for argv
 -the program name is stored a second time above the envp string array
 
+Loading:
+-Shebang "#!" indicates interpreter
+-list of special interpreters exists in linux
 
 ELF Format:
 -ELF Header (contains information about the type of ELF)
