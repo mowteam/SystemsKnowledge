@@ -1,0 +1,20 @@
+Linux Sandbox:
+-seccomp
+
+Syscalls and Sandboxing:
+-ptrace() can be used to puppet an external process and bypass the sandbox (applicable to seccomp)
+-sendmsg() can send open file descriptors across processes
+-prctl() can be useful
+
+Namespaces:
+-Reference: https://www.youtube.com/watch?v=-Xd22KjZwJk (pwn.college)
+-unshare allows a process to separate its namespaces from the parent process (can separate mount (file system), network, processes (pid), etc)
+-unshare -m -p -n --fork --mount-proc ./program (bash command to separate the mount, network, and process namespaces for a child process, this also remounts /proc so that the old processes cannot be accessed)
+-Note: unsharing the mount namespace means that when new mount points are added, the parent/child process will not see the new mount point
+-unshare is also a syscall
+-mount --bind old_dir new_dir (bash command to mount new directory)
+-pivot_root [new_root] [old_root] 
+	-used to change the root to within the container (still need to chdir), similar to chroot but more secure and modern. 
+	-the command moves the old root into the [old_root] directory
+	-note that the [new_root] needs to be a mount point (run mount --bind [new_root] [new_root])
+-setns syscall allows you to enter a new namespace using a socket file descriptor and the namespace type (i.e. mount, process, network, etc.)
