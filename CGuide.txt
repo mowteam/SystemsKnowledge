@@ -1,3 +1,4 @@
+
 Pointers vs Arrays:
 -char buffer[N] is different than char * buffer
 -arrays represent the actual data, where as pointers represent a pointer that points to the array
