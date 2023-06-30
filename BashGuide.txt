@@ -5,3 +5,22 @@ $(command) to substitute command output
 'command' to substitute command output
 exec [fd]<> [file] to create file descriptor
 (command) runs the command in a subhsell, similar to forking the shell
+
+Redirection:
+-reference https://www.gnu.org/software/bash/manual/html_node/Redirections.html#Redirecting-Input
+- &>[file], redirects both stdout and stderr to a file
+- [n]>&[fd] makes [n] a duplicate of the output file descriptor
+-[n]<&digit makes [n] a duplicate of the input file descriptor
+-[n]<&digit- moves the digit input file descriptor to [n], closing digit afterwards (move redirection)
+-[n]>&digit- moves the digit output file descriptor to [n], closing digit afterwards (move redirection)
+-Note, for either move redirection, if no digit is specified, [n] is closed
+
+GDB:
+-reference https://www.youtube.com/watch?list=PL-ymxv0nOtqqQzEncNuE6jetlJAiBUda-&v=r185fCzdw8Y (pwn.college)
+-useful commands: print, examine (x), display
+-gdb scripts can execute commands at breakpoints or catch points using (silent eliminates the breakpoint print out):
+	b *main
+	commands
+		silent
+		p $rip
+	end

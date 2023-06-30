@@ -18,3 +18,4 @@ Namespaces:
 	-the command moves the old root into the [old_root] directory
 	-note that the [new_root] needs to be a mount point (run mount --bind [new_root] [new_root])
 -setns syscall allows you to enter a new namespace using a socket file descriptor and the namespace type (i.e. mount, process, network, etc.)
+-Docker uses the combination of seccomp, namespaces, and cgroups to create containers
