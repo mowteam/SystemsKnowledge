@@ -1,0 +1,61 @@
+Definition of Origin:
+-(scheme, host, port)
+-Ex: https://localhost:80
+
+Definition of Site:
+-eTLD + 1
+-a request can be same-site but not same origin
+-Ex: wustl-bearshell.github.io is a site because github.io is a eTLD
+
+Definition of Top Level Domain (TLD) and Effective Top Level Domain:
+-TLD is the right most label in the domain (e.g. .com, .io, etc.)
+-eTLD is the lowest level from a public suffix list (e.g. github.io, .com, etc.)
+
+
+Sending/Receiving Same-Origin:
+-can do whatever you want
+
+Sending Cross-Origin Requests:
+-simple requests allowed (i.e. GET / HEAD / POST and certain accepted headers)
+
+Reading Cross-Origin Responses:
+-HTML-embeds allowed (e.g. <img>, <video>, <iframe>, etc.)
+-non HTML embeds disallowed (no javascript)
+
+SameSite Cookie Attribute:
+-SameSite=None, cookie is sent in cross-site requests
+-SameSite=Lax, Cookie is sent in cross-site top-level navigation GET requests
+-SameSite=Strict, Cookie is not sent in cross-site requests
+
+Note: SameSite cookies may not always be implemented, so a secret token passed as a query parameter should be used to prevent Cross-site Request Forgery (CSRF)
+
+Cross-Origin Resource Sharing (CORS):
+-allows for more powerful resource sharing across origins, while maintaining security
+-browser performs a pre-flight request to determine if it is "allowed" to make the request (specifies the Origin, request method, and request headers)
+-the pre-flight response will say the allowed origins, methods, and headers. The response will also specify if credentials are allowed to be included in the request and which response headers data can be read from
+
+Cross-site Scripting (XSS):
+-not actually cross-site
+-non-persistent attack uses a link that returns content (i.e. error message), allowing arbitrary javascript code to be ran when the victim clicks on a link
+-Can also embed javascript code in the site, giving the code access to all resources
+-Defenses: filter user input for javascript, URL encode user input to separate data from code, and CSP
+
+Content Security Policy (CSP):
+-limits what javascript code is allowed to run in the browser based on where it came from (inline vs linked)
+-implemented using the Content-Security-Policy header in HTTP responses or in the <meta> tag of a webpage
+-inline javascript can be differentiated using its hash value or a nonce id value that is changed each time the webpage is loaded
+
+
+SQL Injection:
+-MySQL comments: '#', '-- ', and '/* */'
+-most SQL APIs do not support multiple SQL query statements
+-Defenses: filtering or encoding special characters (potential security holes) and prepared statements (most secure option)
+-the difficulty of executing SQL injections is determining which version of SQL is used and the data types and names of different columns, as well as, table names
+-UNION can be useful, allows results to be combined, but the number of columns from each statement need to match
+-schema table contains the name of all tables (in sqlite, SELECT tbl_name FROM sqlite_master, will get all table names)
+
+
+
+
+
+

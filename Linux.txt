@@ -19,3 +19,20 @@ Namespaces:
 	-note that the [new_root] needs to be a mount point (run mount --bind [new_root] [new_root])
 -setns syscall allows you to enter a new namespace using a socket file descriptor and the namespace type (i.e. mount, process, network, etc.)
 -Docker uses the combination of seccomp, namespaces, and cgroups to create containers
+
+
+Processes and Threads:
+-Processes have their own virtual memory, registers, fds, pid, and security properties (uid, gid, seccomp rules)
+-Threads exists within a process and share virtual memory and fds. They have their own registers, stack (stored in different areas of VM), thread ID, and security properties
+-all processes start off from the main thread
+-use libraries, such as pthread (C), to create threads
+-clone() syscall is the successor to fork() and using flags, you can specify what parts of the parent thread, the child thread shares. You can also create new processes (often used in place of fork nowadays)
+-Note: there is a discrepancy between certain libc and libpthread syscall wrappers (e.g. setuid() and exit()) and the actual syscall. The C libaries follow POSIX, which says setuid() should update the uid of all threads and exit() should exit all threads (the wrapper calls the exit_group() syscall). Instead, the Linux syscalls will just affect the current thread's resources (uid is not shared between threads).
+-Note: use the syscall(sys_id, args...) to call syscalls directly in C
+-threads can communicate using global variables (not always a good idea)
+-pthread_mutex_lock() and pthread_mutex_unlock() can be used to stop race conditions in threads by only allowing one thread at a time to run the block of code enclosed by these functions
+
+
+Signals:
+-a process can send any signal to any process as long as the sending process's rUID or eUID match the receiving process's rUId or saved UID. The sending process can also be privileged and have the CAP_KILL capability 
+
