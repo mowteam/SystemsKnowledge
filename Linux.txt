@@ -1,5 +1,8 @@
 Linux Sandbox:
--seccomp
+-seccomp, namespaces, and cgroups
+-seccomp restricts the syscalls a process can make
+-namespaces separates resources of process
+-cgroups allow advanced feature limitation including limiting memory and computing resources of a process
 
 Syscalls and Sandboxing:
 -ptrace() can be used to puppet an external process and bypass the sandbox (applicable to seccomp)
