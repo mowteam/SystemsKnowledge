@@ -1,0 +1,26 @@
+Approach:
+-look for files hidden using zip archives or steg techniques
+-initially use exiftool, steghide/stegseek, binwalk
+-look for mangled versions of zip archive magic numbers
+
+Tools:
+-binwalk (search binary files for hidden files, byte patterns, etc.)
+-steghide (hide and extract files using steg techniques)
+-stegseek (steghide but brute forces passwords with wordlist)
+-fzipcrack (brute force zip passwords using wordlist)
+-john (john the ripper, in the context of steg, use john to generate wordlists)
+-foremost (extracts files by looking for magic numbers, headers, and footers, similar to binwalk) 
+-exiftool (gives information about a files header, sometimes says if there is a hidden file)
+-zsteg (detect steg in PNG and BMP formats)
+
+Zip Format:
+-A zip archive must have the following:
+-List of local file headers
+	-start with magic number: 0x04034b50
+	-information about compression and data length
+-Central directory file header
+	-starts with magic number: 0x02014b50
+	-contains list of all the local file headers and their offsets
+-End of central directory record (EOCD)
+	-starts with magic number: 0x06054b50
+	-end of zip archive

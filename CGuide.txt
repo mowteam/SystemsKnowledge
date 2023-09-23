@@ -48,9 +48,10 @@ FIFO:
 -a named pipe that can last beyond the life of a process. Useful for ad hoc communication
 -FIFOs are a special type of file that discard data once it has been read
 -create using mkfifo() syscall
--writing process will block until a reader becomes availables (another process opens the FIFO with read permissions)
--A pipe or FIFO has to be open at both ends simultaneously
+-when opening the write-side of a FIFO, the process will block until the read-side is opened (another process opens the FIFO with read permissions), so make sure to open read-side of FIFO before the write side
+-A pipe or FIFO has to be open at both ends simultaneously when performing IO operations
 -beware weird I/O blocking errors can occur
+-writing and reading will block until another process performs the corresponding action
 
 I/O Blocking:
 -pipes and FIFO have the same IO blocking semantics

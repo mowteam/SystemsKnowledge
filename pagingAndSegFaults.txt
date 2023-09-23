@@ -6,9 +6,10 @@ Paging Overview:
 -permission bits can be set on each page and they are checked by the MMU
 
 Multi-level page table:
--the first level is called the global page table and is always stored in memory (not on disk)
+-the first level is called the global page table and is always stored in memory (not on disk), pointed to by the cr3 register
 -PTEs point to other page tables
--the lowest level is a normal page table
+-the lowest level is a normal page table with the entries having physical addresses
+-page directories store virtual addresses that point to the next page directory/table (double check this). This means all page directories except the highest level one can be moved to disk.
 
 Page Faults:
 -occurs when a virtual address is not mapped to a physical address (either on disk or unallocated)

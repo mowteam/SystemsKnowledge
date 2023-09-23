@@ -17,7 +17,7 @@ Main arguments/stack layout:
 -argv points to an array of char pointers that are above the arguments to main
 -envp points to an array of char pointers that are above the argv array
 -the actual string values for argv are stored above the envp array
--thr actual string vlaues for envp are stroed above the strings for argv
+-the actual string values for envp are stored above the strings for argv
 -the program name is stored a second time above the envp string array
 
 Loading:
@@ -44,6 +44,10 @@ Symbol and String Tables:
 -the .dynsym and its .dymstr are used during load time for dynamic linking, so stripping a binary does not remove these (use nm -D to see them)
 -strip does not provide the capability to remove the section header, but the section header can be removed safely
 
+Stripping:
+-stripping removes symbol tables
+-stripping does not removed the section header
+
 Linking (generic):
 -connecting symbol references and definitions is called Relocation
 -uses the relocation section and table to perform this process (.rela for x86-64 and .rel for x86)
@@ -52,13 +56,15 @@ Dynamic Linking:
 -the .dynamic section holds information for dynamic linking, including required dependencies, such as libc.so.6
 -LD_PRELOAD and LD_LIBRARY_PATH can be used to load certain dependencies first and replace library calls
 -on Linux the dynamic library VM addresses can change from process to process
--the GOT and PLT enable lazy linking (linking occurs when a function is first used)
--the .plt contains three instructions that point to .got.plt which is a subset of .got containing the dynamically determined address of the function
--the .plt will update this entry when a function is first called and then jump to the address stored in this entry for all other calls of the function
--the DYNAMIC segment is used to determine the location of the relocation taables and other information needed for dynamic linking, meaning the section header is not needed
+-the GOT (global offset table) enables dynamic linking (the library function offsets can be updated during runtime without having code be writable and executable)
+-the PLT (procedural linkage table) enables lazy linking (linking occurs when a function is first used)
+-the .plt contains three instructions (per dynamically linked function). The first instruction jumps to an address stored in the .got.plt, which is a subset of .got containing the dynamically determined address of the function. The address initally points to the second instruction in the .plt entry allowing the address to be dynamically resolved. After it is updated, the last two instructions of the .plt entry are no longer reached
+-the DYNAMIC segment is used to determine the location of the relocation tables and other information needed for dynamic linking, meaning the section header is not needed
+-IMPORTANT: the entirety of a shared library is mapped into VM (useful for ROP attacks)
 
-
-Stripping:
--stripping removes symbol tables
--stripping does not removed the section header
+Loading:
+-the loader is specified in the ELF file in the INTERP segment, meaning the path cannot be changed after compilation without ELF editing tools
+-the typical loader is /lib64/ld-linux-x86-64.so.2 (more generically called the interpreter of ELF files)
+-/lib64/ld-linux-x86-64.so.2, libc.so.6, and other shared object files are all a part of GLIBC and must match or be compatible with the same version of GLIBC (otherwise the program will not run)
+-ELF files can be run using /lib64/ld-linux-x86-64.so.2 directly on the commandline by passing the path of the ELF as an argument
 

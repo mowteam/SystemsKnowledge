@@ -9,6 +9,14 @@ Syscalls and Sandboxing:
 -sendmsg() can send open file descriptors across processes
 -prctl() can be useful
 
+Kernel Space and User Space:
+-SMEP prevents kernel space code from executing user space code
+-SMAP prevents kernel from accessing user space memory unless the AC flag in the RFLAGS register is set. copy_to_user and copy_from_user set the AC flag in order to access userspace memory
+-the cr3 register points to the physical address of the highest level page table (PML4). This page will never be kicked out of physical memory
+-MSR_LSTAR points to where the syscall instruction jumps to (set at boot)
+-the gs register points to the current task struct
+-the kernel maps all of physical memory contiguously into kernel virtual memory
+
 Namespaces:
 -Reference: https://www.youtube.com/watch?v=-Xd22KjZwJk (pwn.college)
 -unshare allows a process to separate its namespaces from the parent process (can separate mount (file system), network, processes (pid), etc)
@@ -37,5 +45,13 @@ Processes and Threads:
 
 
 Signals:
--a process can send any signal to any process as long as the sending process's rUID or eUID match the receiving process's rUId or saved UID. The sending process can also be privileged and have the CAP_KILL capability 
+-a process can send any signal to any process as long as the sending process's rUID or eUID match the receiving process's rUId or saved UID. The sending process could also be privileged and have the CAP_KILL capability 
 
+Intel Microarchitecture (meltdown attack):
+-processors break down instructions into micro ops
+-micro ops are performed when their dependencies are satisfied and the necessary CPU unit is available
+-instructions are retired when all micro ops are done and the instructions executed before it are retired
+-CPUs can execute multiple instructions at a time by relying on this micro op execution structure, called speculative execution
+-Intel CPU forgets to clear the CPU cache when reseting the state after a failed instruction/interrupt
+-using speculative execution, an array access instruction can be performed using a value in kernel address space as the index, causing the array value to be cached. After the program segfaults and the signal is properly handled, the cached element can be determined giving the value in kernel address space 
+-Note: spectre attack is very similar and occurson out-of-order execution in a CPU (branching is followed before the condition has finished checking)

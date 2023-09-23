@@ -6,6 +6,7 @@ $(command) to substitute command output
 exec [fd]<> [file] to create file descriptor
 (command) runs the command in a subhsell, similar to forking the shell
 Note: tmux is very useful for creating multiple "windows" in a terminal. Look up commands online, but use ctrl-b to initiate commands
+
 Redirection:
 -reference https://www.gnu.org/software/bash/manual/html_node/Redirections.html#Redirecting-Input
 - &>[file], redirects both stdout and stderr to a file
@@ -13,7 +14,7 @@ Redirection:
 -[n]<&digit makes [n] a duplicate of the input file descriptor
 -[n]<&digit- moves the digit input file descriptor to [n], closing digit afterwards (move redirection)
 -[n]>&digit- moves the digit output file descriptor to [n], closing digit afterwards (move redirection)
--Note, for either move redirection, if no digit is specified, [n] is closed
+-Note: for either move redirection, if no digit is specified, [n] is closed
 
 GDB:
 -reference https://www.youtube.com/watch?list=PL-ymxv0nOtqqQzEncNuE6jetlJAiBUda-&v=r185fCzdw8Y (pwn.college)
